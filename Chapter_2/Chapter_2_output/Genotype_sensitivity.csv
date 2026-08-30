@@ -1,0 +1,4 @@
+"weighting","median_infections","infections_lower95","infections_upper95","median_IFR","IFR_lower95","IFR_upper95"
+"Dirichlet",6601,2847,21451,0.312,0.096,0.724
+"R0_negative",6473,2792,21036,0.318,0.098,0.738
+"R0_positive",6292,2713,20448,0.327,0.101,0.759
