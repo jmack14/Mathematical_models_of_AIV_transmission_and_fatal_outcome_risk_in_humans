@@ -3,6 +3,8 @@
 # Excluding uncertain pandemics (1889 and/or 2009)
 # ============================================================
 
+set.seed(20260828)
+
 library(bbmle)
 
 fit_interpandemic <- function(pan_year, scenario){
