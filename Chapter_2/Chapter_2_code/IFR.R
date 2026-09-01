@@ -2,17 +2,8 @@
 # Estimating the infection fatality ratio for humans infected with avian influenza viruses
 # ============================================================
 
-# ============================================================
-# Reproducibility
-# ============================================================
-
-# Fixed seed for all stochastic procedures, including
-# Latin Hypercube Sampling and reproducible plot label placement.
+# Fixed random seed 
 set.seed(20260828)
-
-# Load interpandemic period results
-load("C:/Users/marti/Desktop/Joshua/Code/Clean_code/Output/Interpandemic_period_results.RData")
-
 
 # ============================================================
 # Load libraries
