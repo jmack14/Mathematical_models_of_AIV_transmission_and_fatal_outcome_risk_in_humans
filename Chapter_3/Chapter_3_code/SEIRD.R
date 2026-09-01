@@ -2,9 +2,6 @@
 # SEIRD model for the spread of HPAI virus in NFLD seabirds in 2022
 # ============================================================
 
-# Fixed random seed for reproducibility
-set.seed(20260828)
-
 # ============================================================
 # Libraries & global settings
 # ============================================================
@@ -13,11 +10,12 @@ library(macpan2)
 library(tidyverse)
 library(stringr)
 library(splines)
-library(tidyverse)
 library(ggtext)
 
-setwd("C:/Users/ER/Desktop/Fall_2025/Grad_school/thesis/Chp_2/Chp2_figures")
 options(scipen = 999)
+
+# Fixed random seed 
+set.seed(20260828)
 
 # ============================================================
 # Load data

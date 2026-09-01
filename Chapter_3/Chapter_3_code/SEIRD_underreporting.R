@@ -2,9 +2,6 @@
 # SEIRD model for the spread of HPAI virus in NFLD seabirds in 2022 with underreporting scenarios
 # ============================================================
 
-# Fixed random seed for reproducibility
-set.seed(20260828)
-
 # ============================================================
 # Libraries & global settings
 # ============================================================
@@ -13,12 +10,14 @@ library(macpan2)
 library(tidyverse)
 library(stringr)
 library(splines)
-library(tidyverse)
 library(stringr)
 library(ggplot2)
 library(ggtext)
 
 options(scipen = 999)
+
+# Fixed random seed 
+set.seed(20260828)
 
 # ============================================================
 # Load data
