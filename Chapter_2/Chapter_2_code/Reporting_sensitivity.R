@@ -2,16 +2,8 @@
 # Sensitivity analysis: incomplete reporting of human AIV deaths
 # ============================================================
 
-# Path to transformed samples relative to project root
-dat38 <- read.csv(
-  "C:/Users/marti/Desktop/Joshua/Code/Clean_code/Output/transformed_samples_38.csv",
-  stringsAsFactors = FALSE
-)
-
 # Load infection estimates
-dat38 <- read.csv(
-  "C:/Users/ER/Desktop/Fall_2025/Grad_school/thesis/Code/Clean_code/Output/transformed_samples_38.csv"
-)
+dat38 <- read.csv("transformed_samples_38.csv", stringsAsFactors = FALSE) 
 
 # ------------------------------------------------------------
 # Input observed deaths
