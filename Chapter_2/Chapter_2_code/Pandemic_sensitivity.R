@@ -217,9 +217,9 @@ comparison_results <- lapply(files, function(f) {
     Median = median(dat$meannh),
     Lower95 = quantile(dat$meannh, 0.025),
     Upper95 = quantile(dat$meannh, 0.975),
-    Median_IFR = 100 * 20.6 / median(dat$meannh),
-    IFR_Lower95 = 100 * 20.6 / quantile(dat$meannh, 0.975),
-    IFR_Upper95 = 100 * 20.6 / quantile(dat$meannh, 0.025)
+    Median_IFR = 100 * 16.7 / median(dat$meannh),
+    IFR_Lower95 = 100 * 16.7 / quantile(dat$meannh, 0.975),
+    IFR_Upper95 = 100 * 16.7 / quantile(dat$meannh, 0.025)
   )
   
 })

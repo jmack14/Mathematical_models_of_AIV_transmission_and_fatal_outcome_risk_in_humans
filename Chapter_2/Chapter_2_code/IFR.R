@@ -1,5 +1,5 @@
 # ============================================================
-# Estimating the infection fatality ratio for humans infected with avian influenza viruses
+# Estimating the severity of zoonotic avian influenza viruses with pandemic potential using an evolutionary epidemiological model
 # ============================================================
 
 # Fixed random seed 
@@ -25,18 +25,9 @@ library(here)
 # Load interpandemic period results
 # ============================================================
 
-# Path relative to project root
-Interpandemic_results <- here("Code", "Clean_code", "Output", "Interpandemic_period_results.RData")
+Interpandemic_results <- "Interpandemic_period_results.RData"
 
-# Check if file exists before loading
-if (!file.exists(Interpandemic_results)) {
-  stop("Error: Interpandemic_period_results.RData not found.
-       Make sure the Output folder is inside Code/Clean_code/")
-}
-
-# Load the file
 load(Interpandemic_results)
-message("Interpandemic period results loaded successfully!")
 
 # ============================================================
 # pi_i function
@@ -244,10 +235,10 @@ Fig2A <- ggplot() +
   )
 
 # ============================================================
-# Prepare IFR distributions
+# Prepare severity proxy distributions
 # ============================================================
 
-deaths <- 20.6
+deaths <- 16.7
 
 make_ifr_df <- function(res){
   df <- res$sort_output %>%
@@ -304,7 +295,7 @@ Fig2B <- ggplot() +
                   size = 3.5, hjust = 1, vjust = 0) +
   
   ylab("Cumulative probability") +
-  xlab("Infection fatality ratio (per 10,000 infections)") +
+  xlab("Severity proxy (per 10,000 infections)") +
   
   scale_x_log10(
     breaks = c(1,10,100,1000)
@@ -332,19 +323,19 @@ ggsave("Fig2.tiff",
        compression = "lzw")
 
 # ============================================================
-# Plot IFR comparison: Fig3
+# Plot comparison with IFRs: Fig3
 # ============================================================
 
-# IFR data
+# Data
 ifr_data <- data.frame(
   Virus = c("Seasonal influenza",
             "SARS-CoV-2",
             "AIV (53.5 years)",
             "AIV (38 years)",
             "AIV (18.8 years)"),
-  estimate = c(4.7, 16, 46, 32, 16),
-  lower = c(2.9, 16, 17, 9.6, 5.6),
-  upper = c(6.5, 16, 97, 75, 33)
+  estimate = c(4.7, 16, 38, 26, 13),
+  lower = c(2.9, 16, 14, 7.9, 4.8),
+  upper = c(6.5, 16, 78, 60, 27)
 )
 
 # Order for plotting
@@ -381,7 +372,7 @@ Fig3 <- ggplot(ifr_data, aes(x = estimate, y = Virus)) +
                   direction = "y",
                   segment.size = 0.2) +
   scale_x_continuous(expand = expansion(mult = c(0.02, 0.12))) +
-  xlab("Infection fatality ratio (per 10,000 infections)") +
+  xlab("Severity proxy or IFR (per 10,000 infections)") +
   ylab(NULL) +
   base_theme
 

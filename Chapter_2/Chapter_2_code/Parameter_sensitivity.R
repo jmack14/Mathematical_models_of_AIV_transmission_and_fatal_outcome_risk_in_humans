@@ -76,9 +76,9 @@ sensitivity_results <- bind_rows(
       Median = median_inf,
       Lower95 = lower_inf,
       Upper95 = upper_inf,
-      Median_IFR = 100 * 20.6 / median_inf,
-      IFR_Lower95 = 100 * 20.6 / upper_inf,
-      IFR_Upper95 = 100 * 20.6 / lower_inf
+      Median_IFR = 100 * 16.7 / median_inf,
+      IFR_Lower95 = 100 * 16.7 / upper_inf,
+      IFR_Upper95 = 100 * 16.7 / lower_inf
     )
     
   })

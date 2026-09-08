@@ -9,7 +9,7 @@ dat38 <- read.csv("transformed_samples_38.csv", stringsAsFactors = FALSE)
 # Input observed deaths
 # ------------------------------------------------------------
 
-reported_deaths <- 20.6  
+reported_deaths <- 16.7  
 
 
 # ------------------------------------------------------------

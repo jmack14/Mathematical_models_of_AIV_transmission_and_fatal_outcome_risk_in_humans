@@ -191,13 +191,13 @@ SA_summary <- SA_results %>%
       round(quantile(mean_nh, 0.975), 0),
     
     median_IFR =
-      round(100 * 20.6 / median(mean_nh), 3),
+      round(100 * 16.7 / median(mean_nh), 3),
     
     IFR_lower95 =
-      round(100 * 20.6 / quantile(mean_nh, 0.975), 3),
+      round(100 * 16.7 / quantile(mean_nh, 0.975), 3),
     
     IFR_upper95 =
-      round(100 * 20.6 / quantile(mean_nh, 0.025), 3)
+      round(100 * 16.7 / quantile(mean_nh, 0.025), 3)
     
   )
 
