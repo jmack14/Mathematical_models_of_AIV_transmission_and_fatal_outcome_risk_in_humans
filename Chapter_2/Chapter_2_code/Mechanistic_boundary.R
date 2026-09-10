@@ -98,16 +98,16 @@ nh_max <- nz_max * m_max
 
 
 # ------------------------------------------------------------
-# Extreme IFR estimates
+# Extreme severity proxy estimates
 # ------------------------------------------------------------
 
-annual_deaths <- 20.6
+annual_deaths <- 16.7
 
-# IFR highest when infections lowest
-ifr_max <- annual_deaths / nh_min * 100
+# Severity proxy highest when infections lowest
+proxy_max <- annual_deaths / nh_min * 100
 
-# IFR lowest when infections highest
-ifr_min <- annual_deaths / nh_max * 100
+# Severity proxy lowest when infections highest
+proxy_min <- annual_deaths / nh_max * 100
 
 
 # ------------------------------------------------------------
@@ -125,8 +125,8 @@ boundary_results <- data.frame(
     "Maximum m",
     "Minimum annual infections",
     "Maximum annual infections",
-    "Minimum IFR (%)",
-    "Maximum IFR (%)"
+    "Minimum severity proxy (%)",
+    "Maximum severity proxy (%)"
   ),
   
   Value = c(
@@ -138,8 +138,8 @@ boundary_results <- data.frame(
     m_max,
     nh_min,
     nh_max,
-    ifr_min,
-    ifr_max
+    proxy_min,
+    proxy_max
   )
 )
 
