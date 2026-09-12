@@ -53,6 +53,30 @@ sensitivity_scenarios <- list(
   )
 )
 
+
+# ============================================================
+# Empirical quantile function
+# ============================================================
+
+get_empirical_quantile <- function(x, p) {
+  
+  # Sort values from lowest to highest
+  x_sorted <- sort(x)
+  
+  # Cumulative probabilities
+  cum.prob <- seq(
+    1 / length(x_sorted),
+    1,
+    1 / length(x_sorted)
+  )
+  
+  # First observation with cumulative probability >= p
+  idx <- min(which(cum.prob >= p))
+  
+  x_sorted[idx]
+}
+
+
 # ============================================================
 # Run sensitivity analysis
 # ============================================================
@@ -61,31 +85,65 @@ sensitivity_results <- bind_rows(
   
   lapply(names(sensitivity_scenarios), function(s){
     
+    # Run the model
     res <- run_scenario(
       sensitivity_scenarios[[s]],
       num_samples = 1000
     )
     
-    median_inf <- res$quarts$n[3]
-    lower_inf  <- res$quarts$n[1]
-    upper_inf  <- res$quarts$n[5]
+    # --------------------------------------------------------
+    # Infection estimates
+    # --------------------------------------------------------
+    
+    meannh <- res$transformed_samples$meannh
+    
+    median_inf <- get_empirical_quantile(meannh, 0.50)
+    lower_inf  <- get_empirical_quantile(meannh, 0.025)
+    upper_inf  <- get_empirical_quantile(meannh, 0.975)
+    
+    
+    # --------------------------------------------------------
+    # Severity proxy
+    # --------------------------------------------------------
+    
+    proxy <- 100 * 16.7 / meannh
+    
+    # Directly calculate quantiles from proxy distribution
+    median_proxy <- get_empirical_quantile(proxy, 0.50)
+    lower_proxy  <- get_empirical_quantile(proxy, 0.025)
+    upper_proxy  <- get_empirical_quantile(proxy, 0.975)
+    
+    
+    # --------------------------------------------------------
+    # Return results
+    # --------------------------------------------------------
     
     data.frame(
       Scenario = s,
-      Mean = mean(res$transformed_samples$meannh),
+      
+      # Mean and uncertainty for human infections
+      Mean = mean(meannh),
       Median = median_inf,
       Lower95 = lower_inf,
       Upper95 = upper_inf,
-      Median_IFR = 100 * 16.7 / median_inf,
-      IFR_Lower95 = 100 * 16.7 / upper_inf,
-      IFR_Upper95 = 100 * 16.7 / lower_inf
+      
+      # Mean and uncertainty for severity / IFR proxy
+      Median_proxy = median_proxy,
+      proxy_Lower95 = lower_proxy,
+      proxy_Upper95 = upper_proxy
     )
     
   })
   
 )
 
+
+# ============================================================
+# Print results
+# ============================================================
+
 print(sensitivity_results)
+
 
 # ============================================================
 # Save results

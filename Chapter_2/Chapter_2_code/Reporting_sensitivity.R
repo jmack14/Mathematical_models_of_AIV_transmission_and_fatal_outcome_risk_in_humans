@@ -25,7 +25,7 @@ reporting_scenarios <- c(
 
 
 # ------------------------------------------------------------
-# Quantile function matching the main analysis
+# Empirical quantile function
 # ------------------------------------------------------------
 
 get_empirical_quantile <- function(x, p) {
@@ -63,7 +63,7 @@ proxy_results <- lapply(
     
     data.frame(
       Reporting = reporting_fraction,
-      Median_IFR = get_empirical_quantile(proxy, 0.50),
+      Median_proxy = get_empirical_quantile(proxy, 0.50),
       Lower_95   = get_empirical_quantile(proxy, 0.025),
       Upper_95   = get_empirical_quantile(proxy, 0.975)
     )

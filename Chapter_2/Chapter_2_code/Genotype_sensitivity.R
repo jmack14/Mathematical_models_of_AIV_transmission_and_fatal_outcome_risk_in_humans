@@ -33,7 +33,7 @@ generate_genotypes <- function(param_ranges, num_samples){
   )
   
   
-  # pandemic probability for each genotype
+  # Pandemic probability for each genotype
   transformed_samples$pi <- apply(
     transformed_samples[,c("a","Rstar","R0","psi")],
     1,
@@ -55,8 +55,8 @@ run_weighting <- function(genotypes, weighting){
   
   if(weighting == "Dirichlet"){
     
-    rho <- rgamma(n,shape=1)
-    rho <- rho/sum(rho)
+    rho <- rgamma(n, shape = 1)
+    rho <- rho / sum(rho)
     
   }
   
@@ -64,31 +64,31 @@ run_weighting <- function(genotypes, weighting){
   if(weighting == "R0_positive"){
     
     rho <- genotypes$R0
-    rho <- rho/sum(rho)
+    rho <- rho / sum(rho)
     
   }
   
   
   if(weighting == "R0_negative"){
     
-    rho <- 1-genotypes$R0
-    rho <- rho/sum(rho)
+    rho <- 1 - genotypes$R0
+    rho <- rho / sum(rho)
     
   }
   
   
-  # weighted probability of pandemic per infection
+  # Weighted probability of pandemic per infection
   bar_pi <- sum(rho * genotypes$pi)
   
   
-  # solve for zoonotic spillovers
+  # Solve for zoonotic spillovers
   Lambda <- function(mean_nz, Lambda_target){
     
     nz <- 0:100000
     
-    PNz_nz <- dpois(nz,mean_nz)
+    PNz_nz <- dpois(nz, mean_nz)
     
-    1 - sum(PNz_nz*(1-bar_pi)^nz) - Lambda_target
+    1 - sum(PNz_nz * (1 - bar_pi)^nz) - Lambda_target
     
   }
   
@@ -100,23 +100,23 @@ run_weighting <- function(genotypes, weighting){
     
     mean_nz[i] <- uniroot(
       Lambda,
-      interval=c(0,1e6),
-      Lambda_target=1/genotypes$psi[i]
+      interval = c(0, 1e6),
+      Lambda_target = 1 / genotypes$psi[i]
     )$root
     
   }
   
   
-  # weighted mean infections per spillover
+  # Weighted mean infections per spillover
   weighted_m <- sum(
     rho *
-      (1/(1-genotypes$R0))
+      (1 / (1 - genotypes$R0))
   )
   
   
-  # annual infections
+  # Annual infections
   mean_nh <- weighted_m * mean_nz
-
+  
   data.frame(
     weighting = weighting,
     mean_nh = mean_nh
@@ -124,6 +124,28 @@ run_weighting <- function(genotypes, weighting){
   
 }
 
+
+# ============================================================
+# Empirical quantile function
+# ============================================================
+
+get_empirical_quantile <- function(x, p) {
+  
+  # Sort values from lowest to highest
+  x_sorted <- sort(x)
+  
+  # Cumulative probabilities
+  cum.prob <- seq(
+    1 / length(x_sorted),
+    1,
+    1 / length(x_sorted)
+  )
+  
+  # First observation with cumulative probability >= p
+  idx <- min(which(cum.prob >= p))
+  
+  x_sorted[idx]
+}
 
 
 # ============================================================
@@ -135,19 +157,18 @@ num_samples <- 1000
 
 param_ranges <- list(
   
-  R0 = list(rate=20),
+  R0 = list(rate = 20),
   
-  a = c(0.000012,0.000024),
+  a = c(0.000012, 0.000024),
   
-  Rstar = c(1,2,1.1),
+  Rstar = c(1, 2, 1.1),
   
   psi = list(
-    shape=delta/theta0,
-    scale=theta0
+    shape = delta / theta0,
+    scale = theta0
   )
   
 )
-
 
 
 # Generate one common genotype sample
@@ -157,18 +178,16 @@ genotypes <- generate_genotypes(
 )
 
 
-
 # Apply alternative genotype weights
 SA_results <- bind_rows(
   
-  run_weighting(genotypes,"Dirichlet"),
+  run_weighting(genotypes, "Dirichlet"),
   
-  run_weighting(genotypes,"R0_positive"),
+  run_weighting(genotypes, "R0_positive"),
   
-  run_weighting(genotypes,"R0_negative")
+  run_weighting(genotypes, "R0_negative")
   
 )
-
 
 
 # ============================================================
@@ -181,31 +200,71 @@ SA_summary <- SA_results %>%
   
   summarise(
     
+    # --------------------------------------------------------
+    # Annual human infections
+    # --------------------------------------------------------
+    
     median_infections =
-      round(median(mean_nh), 0),
+      round(
+        get_empirical_quantile(mean_nh, 0.50),
+        0
+      ),
     
     infections_lower95 =
-      round(quantile(mean_nh, 0.025), 0),
+      round(
+        get_empirical_quantile(mean_nh, 0.025),
+        0
+      ),
     
     infections_upper95 =
-      round(quantile(mean_nh, 0.975), 0),
+      round(
+        get_empirical_quantile(mean_nh, 0.975),
+        0
+      ),
     
-    median_IFR =
-      round(100 * 16.7 / median(mean_nh), 3),
+    # --------------------------------------------------------
+    # Severity / IFR proxy
+    # Calculate proxy for every simulation first
+    # --------------------------------------------------------
     
-    IFR_lower95 =
-      round(100 * 16.7 / quantile(mean_nh, 0.975), 3),
+    median_proxy =
+      round(
+        get_empirical_quantile(
+          100 * 16.7 / mean_nh,
+          0.50
+        ),
+        3
+      ),
     
-    IFR_upper95 =
-      round(100 * 16.7 / quantile(mean_nh, 0.025), 3)
+    proxy_lower95 =
+      round(
+        get_empirical_quantile(
+          100 * 16.7 / mean_nh,
+          0.025
+        ),
+        3
+      ),
+    
+    proxy_upper95 =
+      round(
+        get_empirical_quantile(
+          100 * 16.7 / mean_nh,
+          0.975
+        ),
+        3
+      )
     
   )
 
 print(SA_summary)
 
 
+# ============================================================
+# Save results
+# ============================================================
+
 write.csv(
   SA_summary,
   "Genotype_sensitivity.csv",
-  row.names=FALSE
+  row.names = FALSE
 )

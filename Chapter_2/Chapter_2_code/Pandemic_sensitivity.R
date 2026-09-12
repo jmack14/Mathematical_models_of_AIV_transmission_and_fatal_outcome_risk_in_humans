@@ -208,25 +208,99 @@ for (s in names(scenario_files)) {
 
 files <- list.files(pattern = "mean_nh_38_.*\\.csv$")
 
+
+# ------------------------------------------------------------
+# Empirical quantile function
+# Matching the main analysis and other sensitivity analyses
+# ------------------------------------------------------------
+
+get_empirical_quantile <- function(x, p) {
+  
+  # Sort values from lowest to highest
+  x_sorted <- sort(x)
+  
+  # Cumulative probabilities
+  cum.prob <- seq(
+    1 / length(x_sorted),
+    1,
+    1 / length(x_sorted)
+  )
+  
+  # First observation with cumulative probability >= p
+  idx <- min(which(cum.prob >= p))
+  
+  x_sorted[idx]
+}
+
+
+# ------------------------------------------------------------
+# Calculate results for each pandemic-history scenario
+# ------------------------------------------------------------
+
 comparison_results <- lapply(files, function(f) {
   
   dat <- read.csv(f)
   
+  # Infection estimates
+  meannh <- dat$meannh
+  
+  # Empirical quantiles of annual human infections
+  median_inf <- get_empirical_quantile(meannh, 0.50)
+  lower_inf  <- get_empirical_quantile(meannh, 0.025)
+  upper_inf  <- get_empirical_quantile(meannh, 0.975)
+  
+  # ----------------------------------------------------------
+  # Severity proxy
+  # ----------------------------------------------------------
+  
+  proxy <- 100 * 16.7 / meannh
+  
+  # Empirical quantiles 
+  median_proxy <- get_empirical_quantile(proxy, 0.50)
+  lower_proxy  <- get_empirical_quantile(proxy, 0.025)
+  upper_proxy  <- get_empirical_quantile(proxy, 0.975)
+  
   data.frame(
-    Scenario = sub("^mean_nh_38_(.*)\\.csv$", "\\1", f),
-    Median = median(dat$meannh),
-    Lower95 = quantile(dat$meannh, 0.025),
-    Upper95 = quantile(dat$meannh, 0.975),
-    Median_IFR = 100 * 16.7 / median(dat$meannh),
-    IFR_Lower95 = 100 * 16.7 / quantile(dat$meannh, 0.975),
-    IFR_Upper95 = 100 * 16.7 / quantile(dat$meannh, 0.025)
+    Scenario = sub(
+      "^mean_nh_38_(.*)\\.csv$",
+      "\\1",
+      f
+    ),
+    
+    # Annual human infections
+    Median = median_inf,
+    Lower95 = lower_inf,
+    Upper95 = upper_inf,
+    
+    # Severity / IFR proxy
+    Median_proxy = median_proxy,
+    proxy_Lower95 = lower_proxy,
+    proxy_Upper95 = upper_proxy
   )
   
 })
 
-comparison_results <- do.call(rbind, comparison_results)
+
+# ------------------------------------------------------------
+# Combine results
+# ------------------------------------------------------------
+
+comparison_results <- do.call(
+  rbind,
+  comparison_results
+)
+
+
+# ------------------------------------------------------------
+# Print results
+# ------------------------------------------------------------
 
 print(comparison_results)
+
+
+# ------------------------------------------------------------
+# Save results
+# ------------------------------------------------------------
 
 write.csv(
   comparison_results,
