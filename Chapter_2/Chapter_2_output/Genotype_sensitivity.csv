@@ -1,4 +1,4 @@
-"weighting","median_infections","infections_lower95","infections_upper95","median_IFR","IFR_lower95","IFR_upper95"
-"Dirichlet",6601,2847,21451,0.253,0.078,0.587
-"R0_negative",6473,2792,21036,0.258,0.079,0.598
-"R0_positive",6292,2713,20448,0.265,0.082,0.615
+"weighting","median_infections","infections_lower95","infections_upper95","median_proxy","proxy_lower95","proxy_upper95"
+"Dirichlet",6598,2827,21448,0.253,0.077,0.587
+"R0_negative",6471,2772,21033,0.258,0.079,0.598
+"R0_positive",6290,2695,20445,0.265,0.081,0.615
