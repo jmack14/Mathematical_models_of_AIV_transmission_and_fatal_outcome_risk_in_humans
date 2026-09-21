@@ -19,7 +19,7 @@ This folder contains the code and outputs for Chapter 2: Estimating the infectio
 ### Chapter_2_Code
 The `Chapter_2_Code/` directory contains the following scripts:
 - `Interpandemic_periods.R`: Models the interpandemic period distributions
-- `IFR.R`: Estimates the annual number of human AIV infections and the infection fatality ratio
+- `Severity_proxy.R`: Estimates the annual number of human AIV infections and the infection fatality ratio
 - `Pandemic_delay.R`: Estimates the effect of preventing AIV spillovers on pandemic delay time
 - `Spillover_comparison.R`: Compares estimated number of zoonotic spillovers with Day et al.,2006
 - `Parameter_sensitivity.R`: Parameter sensitivity analysis
@@ -114,7 +114,6 @@ The `Chapter_3_Data/` directory contains the following files:
 - bbmle (1.0.25.1)
 - lubridate (1.9.4)
 - ggridges (0.5.7)
-- here (1.0.2)
 - sf (1.0.23)
 - macpan2 (3.5.1)
 - tidyverse (2.0.0)
